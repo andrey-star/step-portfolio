@@ -1,1 +1,3 @@
-This repo contains Andrey Starodubtsev's portfolio and STEP projects.
+# Google Student Training in Engineering Program
+
+This repo contains Andrey's portfolio and STEP projects.
