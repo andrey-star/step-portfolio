@@ -2,9 +2,9 @@ function addRandomQuote() {
   const quotes = [
     `Now. Say my name. Heisenberg. You're god damn right`,
     'I am the danger.',
-    'You see, but you do not observe.',
+    `And on that terrible dissapointment I'm afraid it's time to end.`,
     'There’s a woman lying dead. Perfectly sound analysis but I was hoping you’d go deeper.',
-    `You're treading on some mighty thin ice here.`
+    `You're treading on some mighty thin ice here.`,
   ];
 
   // Pick a random quote.
