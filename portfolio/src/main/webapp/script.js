@@ -33,10 +33,16 @@ function setPhoto() {
   }
 }
 
-function fetchGreeting() {
+function fetchComments() {
   fetch('/data')
-  .then(response => response.text())
-  .then(greeting => document.getElementById('greeting-container').innerHTML = greeting);
+  .then(response => response.json())
+  .then(comments => {
+    const commentContainer = document.getElementById('comments-container');
+    for (let comment of comments) {
+      commentContainer.innerHTML += `<p>${comment}</p>\n`
+    }
+  });
+
 }
 
 window.onload = function() {
