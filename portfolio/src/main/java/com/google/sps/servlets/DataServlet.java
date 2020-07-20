@@ -1,6 +1,8 @@
 package com.google.sps.servlets;
 
 import com.google.gson.Gson;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,16 +18,20 @@ import javax.servlet.http.HttpServletResponse;
 public class DataServlet extends HttpServlet {
 
   private final List<String> comments = new ArrayList<>();
+  private static final Logger logger = LogManager.getLogger(com.google.sps.servlets.DataServlet.class.getName());
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("GET");
+    logger.info("Received GET request");
     response.setContentType("application/json;");
-    response.getWriter().println(convertToJsonUsingGson(comments));
+    String responseBody = convertToJsonUsingGson(comments);
+    logger.info("Sending response:\n" + responseBody);
+    response.getWriter().println(responseBody);
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    logger.info("Received POST request");
     String comment = getParameter(request, "user-comment", "");
     if (!comment.isEmpty()) {
       comments.add(comment);
