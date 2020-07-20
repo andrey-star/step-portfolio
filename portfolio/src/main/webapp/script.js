@@ -33,6 +33,12 @@ function setPhoto() {
   }
 }
 
+function fetchGreeting() {
+  fetch('/data')
+  .then(response => response.text())
+  .then(greeting => document.getElementById('greeting-container').innerHTML = greeting);
+}
+
 window.onload = function() {
   catImage = document.getElementById('cat-photo');
   imageSelector = document.getElementsByName('cat-photo-id');
