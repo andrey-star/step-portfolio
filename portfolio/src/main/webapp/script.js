@@ -42,7 +42,6 @@ function fetchComments() {
       commentContainer.innerHTML += `<p>${comment}</p>\n`
     }
   });
-
 }
 
 window.onload = function() {
@@ -52,4 +51,5 @@ window.onload = function() {
     selector.onchange = setPhoto;
   }
   setPhoto();
+  fetchComments();
 }
