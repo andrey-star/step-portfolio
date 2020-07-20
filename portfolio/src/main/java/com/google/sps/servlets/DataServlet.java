@@ -1,6 +1,5 @@
 package com.google.sps.servlets;
 
-
 import com.google.appengine.api.datastore.*;
 import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
