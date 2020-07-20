@@ -76,7 +76,17 @@
       <input type="text" name="user-comment" placeholder="Enter comment...">
       <input type="submit">
     </form>
-    <p id="comments-container"></p>
+    <div id="comments-container"></div>
+    <label>Number of comments:</label>
+    <select id="comment-limit-selector">
+      <option value="1">1</option>
+      <option value="5">5</option>
+      <option value="10" selected="selected">10</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+    </select>
+    <br>
+    <button onclick="deleteComments()">Delete comments</button>
   </div>
 </body>
 
