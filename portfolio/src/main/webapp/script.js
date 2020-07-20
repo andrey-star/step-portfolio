@@ -42,6 +42,7 @@ function fetchComments() {
       commentContainer.innerHTML += `<p>${comment}</p>\n`
     }
   });
+
 }
 
 window.onload = function() {
