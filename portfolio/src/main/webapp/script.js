@@ -23,7 +23,9 @@ const imageSources = [
 ];
 let catImage;
 let imageSelector;
+let commentForm;
 let commentLimitSelector;
+let commentOrderSelector;
 
 function setPhoto() {
   for (let selector of imageSelector) {
@@ -35,32 +37,78 @@ function setPhoto() {
 }
 
 function fetchComments() {
-  fetch(`/data?comment-limit=${commentLimitSelector.value}`)
+  const url = `/data?comment-limit=${commentLimitSelector.value}&comment-order=${commentOrderSelector.value}`;
+  fetch(url)
     .then(response => response.json())
     .then(comments => {
       const commentContainer = document.getElementById('comments-container');
       commentContainer.innerHTML = '';
       for (let comment of comments) {
-        commentContainer.innerHTML += `<p>${comment.text}</p>\n`
+        commentContainer.innerHTML += `<p class="comment">${comment.text}</p>\n`
       }
     });
 }
 
+function submitComment() {
+  submitFormUrlEncoded('/data', commentForm)
+    .then(() => {
+      for (let i = 0; i < commentForm.length; i++) {
+        if (commentForm[i].name === 'user-comment') {
+          commentForm[i].value = '';
+        }
+      }
+      fetchComments();
+    });
+  
+  // No redirect
+  return false;
+}
+
+function submitFormUrlEncoded(url, form) {
+  let formBody = [];
+  for (let i = 0; i < form.length; i++) {
+    const name = form[i].name;
+    const value = form[i].value;
+    if (name) {
+      formBody.push(`${name}=${value}`);
+    }
+  }
+  formBody = formBody.join('&');
+
+  let fetchOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: formBody
+  };
+  return fetch(url, fetchOptions);
+}
+
 function deleteComments() {
   if (confirm('Are you sure you want to delete all comments?')) {
-    fetch('/delete-data', { method: 'POST' })
+    const url = '/delete-data';
+    fetch(url, { method: 'POST' })
       .then(() => fetchComments());
   }
 }
 
 window.onload = function () {
   catImage = document.getElementById('cat-photo');
+
   imageSelector = document.getElementsByName('cat-photo-id');
   for (let selector of imageSelector) {
     selector.onchange = setPhoto;
   }
   commentLimitSelector = document.getElementById('comment-limit-selector');
   commentLimitSelector.onchange = fetchComments;
+
+  commentOrderSelector = document.getElementById('comment-order-selector');
+  commentOrderSelector.onchange = fetchComments;
+
+  commentForm = document.getElementById('comment-form');
+  commentForm.onsubmit = submitComment;
+
   setPhoto();
   fetchComments();
 }

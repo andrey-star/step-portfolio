@@ -19,15 +19,16 @@ public class DataServlet extends HttpServlet {
 
   private static final Logger logger = LogManager.getLogger(com.google.sps.servlets.DataServlet.class.getName());
 
-  private final Query COMMENTS_QUERY = new Query("Comment")
-          .addSort("timestamp", Query.SortDirection.ASCENDING);
-
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     logger.info("Received GET request");
     String commentLimitParameter = getParameter(request, "comment-limit", "");
     long commentLimit = parseLongOrDefault(commentLimitParameter, 10);
-    PreparedQuery results = DatastoreServiceFactory.getDatastoreService().prepare(COMMENTS_QUERY);
+    String commentOrder = getParameter(request, "comment-order", "asc");
+
+    Query.SortDirection order = commentOrder.equals("dec") ? Query.SortDirection.DESCENDING : Query.SortDirection.ASCENDING;
+    Query commentsQuery = new Query("Comment").addSort("timestamp", order);
+    PreparedQuery results = DatastoreServiceFactory.getDatastoreService().prepare(commentsQuery);
     List<Comment> comments = new ArrayList<>();
     Iterator<Entity> commentIterable = results.asIterable().iterator();
     while (commentIterable.hasNext() && commentLimit > 0) {
@@ -46,13 +47,12 @@ public class DataServlet extends HttpServlet {
   }
 
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  public void doPost(HttpServletRequest request, HttpServletResponse response) {
     logger.info("Received POST request");
     String comment = getParameter(request, "user-comment", "");
     if (!comment.isEmpty()) {
       handleComment(comment);
     }
-    response.sendRedirect("/index.html");
   }
 
   private void handleComment(String comment) {

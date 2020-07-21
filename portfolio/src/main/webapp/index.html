@@ -72,9 +72,10 @@
     <button onclick="addRandomQuote()">Random quote</button>
     <div id="quote-container"></div>
     <h2>Comments</h2>
-    <form action="/data" method="POST">
-      <input type="text" name="user-comment" placeholder="Enter comment...">
-      <input type="submit">
+    <form action="" method="POST" id="comment-form">
+      <textarea name="user-comment" placeholder="Enter comment..." cols="70" rows="3" ></textarea>
+      <br>
+      <input type="submit" value="Comment">
     </form>
     <div id="comments-container"></div>
     <label>Number of comments:</label>
@@ -84,6 +85,12 @@
       <option value="10" selected="selected">10</option>
       <option value="50">50</option>
       <option value="100">100</option>
+    </select>
+    <br>
+    <label>Order:</label>
+    <select id="comment-order-selector">
+      <option value="asc">Oldest first</option>
+      <option value="dec">Newest first</option>
     </select>
     <br>
     <button onclick="deleteComments()">Delete comments</button>
