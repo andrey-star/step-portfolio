@@ -10,14 +10,14 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/delete-data")
 public class DeleteServlet extends HttpServlet {
 
-    private final Query COMMENTS_QUERY = new Query("Comment");
+  private final Query COMMENTS_QUERY = new Query("Comment");
 
-    @Override
-    public void doPost(HttpServletRequest req, HttpServletResponse resp) {
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        PreparedQuery results = datastore.prepare(COMMENTS_QUERY);
-        for (Entity comment : results.asIterable()) {
-            datastore.delete(comment.getKey());
-        }
+  @Override
+  public void doPost(HttpServletRequest req, HttpServletResponse resp) {
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    PreparedQuery results = datastore.prepare(COMMENTS_QUERY);
+    for (Entity comment : results.asIterable()) {
+      datastore.delete(comment.getKey());
     }
+  }
 }
