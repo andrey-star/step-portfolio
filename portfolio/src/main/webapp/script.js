@@ -23,6 +23,7 @@ const imageSources = [
 ];
 let catImage;
 let imageSelector;
+let commentLimitSelector;
 
 function setPhoto() {
   for (let selector of imageSelector) {
@@ -34,22 +35,32 @@ function setPhoto() {
 }
 
 function fetchComments() {
-  fetch('/data')
-  .then(response => response.json())
-  .then(comments => {
-    const commentContainer = document.getElementById('comments-container');
-    for (let comment of comments) {
-      commentContainer.innerHTML += `<p>${comment.text}</p>\n`
-    }
-  });
+  fetch(`/data?comment-limit=${commentLimitSelector.value}`)
+    .then(response => response.json())
+    .then(comments => {
+      const commentContainer = document.getElementById('comments-container');
+      commentContainer.innerHTML = '';
+      for (let comment of comments) {
+        commentContainer.innerHTML += `<p>${comment.text}</p>\n`
+      }
+    });
 }
 
-window.onload = function() {
+function deleteComments() {
+  if (confirm('Are you sure you want to delete all comments?')) {
+    fetch('/delete-data', { method: 'POST' })
+      .then(() => fetchComments());
+  }
+}
+
+window.onload = function () {
   catImage = document.getElementById('cat-photo');
   imageSelector = document.getElementsByName('cat-photo-id');
   for (let selector of imageSelector) {
     selector.onchange = setPhoto;
   }
+  commentLimitSelector = document.getElementById('comment-limit-selector');
+  commentLimitSelector.onchange = fetchComments;
   setPhoto();
   fetchComments();
 }

@@ -1,6 +1,5 @@
 package com.google.sps.servlets;
 
-
 import com.google.appengine.api.datastore.*;
 import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
@@ -8,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -25,13 +25,18 @@ public class DataServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     logger.info("Received GET request");
+    String commentLimitParameter = getParameter(request, "comment-limit", "");
+    long commentLimit = parseLongOrDefault(commentLimitParameter, 10);
     PreparedQuery results = DatastoreServiceFactory.getDatastoreService().prepare(COMMENTS_QUERY);
     List<Comment> comments = new ArrayList<>();
-    for (Entity commentEntity : results.asIterable()) {
+    Iterator<Entity> commentIterable = results.asIterable().iterator();
+    while (commentIterable.hasNext() && commentLimit > 0) {
+      Entity commentEntity = commentIterable.next();
       long id = commentEntity.getKey().getId();
       String text = (String) commentEntity.getProperty("text");
       long timestamp = (long) commentEntity.getProperty("timestamp");
       comments.add(new Comment(id, text, timestamp));
+      commentLimit--;
     }
 
     response.setContentType("application/json;");
@@ -63,6 +68,14 @@ public class DataServlet extends HttpServlet {
       return defaultValue;
     }
     return value;
+  }
+
+  private long parseLongOrDefault(String number, long defaultValue) {
+    try {
+      return Long.parseLong(number);
+    } catch (NumberFormatException e) {
+      return defaultValue;
+    }
   }
 
   private String toJson(Object o) {
