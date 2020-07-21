@@ -39,7 +39,7 @@ function fetchComments() {
   .then(comments => {
     const commentContainer = document.getElementById('comments-container');
     for (let comment of comments) {
-      commentContainer.innerHTML += `<p>${comment}</p>\n`
+      commentContainer.innerHTML += `<p>${comment.text}</p>\n`
     }
   });
 }
