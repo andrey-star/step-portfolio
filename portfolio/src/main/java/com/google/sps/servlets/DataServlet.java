@@ -52,7 +52,6 @@ public class DataServlet extends HttpServlet {
     if (!comment.isEmpty()) {
       handleComment(comment);
     }
-    response.sendRedirect("/index.html");
   }
 
   private void handleComment(String comment) {
