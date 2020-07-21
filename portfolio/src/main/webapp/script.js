@@ -23,8 +23,9 @@ const imageSources = [
 ];
 let catImage;
 let imageSelector;
-let commentLimitSelector;
 let commentForm;
+let commentLimitSelector;
+let commentOrderSelector;
 
 function setPhoto() {
   for (let selector of imageSelector) {
@@ -36,14 +37,14 @@ function setPhoto() {
 }
 
 function fetchComments() {
-  const url = `/data?comment-limit=${commentLimitSelector.value}`;
+  const url = `/data?comment-limit=${commentLimitSelector.value}&comment-order=${commentOrderSelector.value}`;
   fetch(url)
     .then(response => response.json())
     .then(comments => {
       const commentContainer = document.getElementById('comments-container');
       commentContainer.innerHTML = '';
       for (let comment of comments) {
-        commentContainer.innerHTML += `<p>${comment.text}</p>\n`
+        commentContainer.innerHTML += `<p class="comment">${comment.text}</p>\n`
       }
     });
 }
@@ -51,9 +52,14 @@ function fetchComments() {
 function submitComment() {
   submitFormUrlEncoded('/data', commentForm)
     .then(() => {
+      for (let i = 0; i < commentForm.length; i++) {
+        if (commentForm[i].name === 'user-comment') {
+          commentForm[i].value = '';
+        }
+      }
       fetchComments();
     });
-
+  
   // No redirect
   return false;
 }
@@ -96,6 +102,9 @@ window.onload = function () {
   }
   commentLimitSelector = document.getElementById('comment-limit-selector');
   commentLimitSelector.onchange = fetchComments;
+
+  commentOrderSelector = document.getElementById('comment-order-selector');
+  commentOrderSelector.onchange = fetchComments;
 
   commentForm = document.getElementById('comment-form');
   commentForm.onsubmit = submitComment;

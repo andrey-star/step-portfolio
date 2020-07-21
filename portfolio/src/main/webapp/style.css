@@ -70,3 +70,11 @@ img {
 #selector-wrapper {
   text-align: center;
 }
+
+.comment {
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 3px;
+  padding: 7px;
+  font-size: 13px;
+}
