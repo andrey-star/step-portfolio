@@ -103,9 +103,9 @@
       </div>
     </div>
     <div class="mb-3">
-    <button onclick="addRandomQuote()" class="btn btn-secondary">Random quote</button>
-    <span id="quote-container"></span>
-  </div>
+      <button onclick="addRandomQuote()" class="btn btn-secondary">Random quote</button>
+      <span id="quote-container"></span>
+    </div>
     <div class="card mb-3">
       <h4 class="card-header">
         Comments
@@ -117,13 +117,13 @@
               <div class="col-8">
                 <textarea class="form-control" name="user-comment" placeholder="Enter comment..." rows="1"></textarea>
               </div>
-              <div class="col-4 py-auto">
+              <div class="col-4">
                 <input type="submit" value="Comment" class="btn btn-secondary mx-auto">
               </div>
             </div>
           </div>
         </form>
-        <div id="comments-container"></div>
+        <div id="comments-container" class="container"></div>
         <div class="container mt-4">
           <label for="comment-limit-selector">Number of comments:</label>
           <select id="comment-limit-selector" class="custom-select mr-3" style="width:auto;">

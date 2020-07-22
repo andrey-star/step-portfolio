@@ -23,16 +23,32 @@ function fetchComments() {
       const commentContainer = document.getElementById('comments-container');
       commentContainer.innerHTML = '';
       for (let comment of comments) {
-        const para = document.createElement('p');
-        para.classList.add('border-bottom');
-        para.appendChild(document.createTextNode(comment.text));
+        const row = createElement('div', commentContainer, 'row', 'align-items-center');
+
+        const colPara = createElement('div', row, 'col-10', 'mt-3');
+        const para = createElement('p', colPara, 'border-bottom', 'h-100');
         para.id = comment.key;
-        para.onclick = function () {
+        para.appendChild(document.createTextNode(comment.text));
+
+        const colDeleteBtn = createElement('div', row, 'col-2');
+        const btnDelete = createElement('button', colDeleteBtn, 'btn', 'btn-light');
+        btnDelete.onclick = function () {
           deleteComment(para.id);
         };
-        commentContainer.appendChild(para);
+
+        const trashIcon = createElement('img', btnDelete);
+        trashIcon.src = 'images/trash.svg';
       }
     });
+}
+
+function createElement(name, parent, ...classes) {
+  const element = document.createElement(name);
+  for (let clazz of classes) {
+    element.classList.add(clazz);
+  }
+  parent.appendChild(element);
+  return element;
 }
 
 function submitComment() {
