@@ -24,7 +24,6 @@ function fetchComments() {
       commentContainer.innerHTML = '';
       for (let comment of comments) {
         const para = document.createElement('p');
-        para.classList.add('comment');
         para.classList.add('border-top');
         para.appendChild(document.createTextNode(comment.text));
         commentContainer.appendChild(para);
@@ -68,7 +67,7 @@ function submitFormUrlEncoded(url, form) {
   return fetch(url, fetchOptions);
 }
 
-function deleteComments() {
+function deleteAllComments() {
   if (confirm('Are you sure you want to delete all comments?')) {
     const url = '/delete-data';
     fetch(url, { method: 'POST' })
