@@ -15,27 +15,6 @@ function addRandomQuote() {
   quoteContainer.innerText = quote;
 }
 
-// Image gallery
-const imageSources = [
-  'senya-gorgeous.jpg',
-  'senya-superman.jpg',
-  'senya-dissapointed.jpg'
-];
-let catImage;
-let imageSelector;
-let commentForm;
-let commentLimitSelector;
-let commentOrderSelector;
-
-function setPhoto() {
-  for (let selector of imageSelector) {
-    if (selector.checked) {
-      catImage.src = 'images/' + imageSources[selector.value];
-      break;
-    }
-  }
-}
-
 function fetchComments() {
   const url = `/data?comment-limit=${commentLimitSelector.value}&comment-order=${commentOrderSelector.value}`;
   fetch(url)
@@ -45,7 +24,7 @@ function fetchComments() {
       commentContainer.innerHTML = '';
       for (let comment of comments) {
         const para = document.createElement('p');
-        para.classList.add('comment');
+        para.classList.add('border-bottom');
         para.appendChild(document.createTextNode(comment.text));
         commentContainer.appendChild(para);
       }
@@ -88,7 +67,7 @@ function submitFormUrlEncoded(url, form) {
   return fetch(url, fetchOptions);
 }
 
-function deleteComments() {
+function deleteAllComments() {
   if (confirm('Are you sure you want to delete all comments?')) {
     const url = '/delete-data';
     fetch(url, { method: 'POST' })
@@ -96,13 +75,11 @@ function deleteComments() {
   }
 }
 
-window.onload = function () {
-  catImage = document.getElementById('cat-photo');
+let commentForm;
+let commentLimitSelector;
+let commentOrderSelector;
 
-  imageSelector = document.getElementsByName('cat-photo-id');
-  for (let selector of imageSelector) {
-    selector.onchange = setPhoto;
-  }
+window.onload = function () {
   commentLimitSelector = document.getElementById('comment-limit-selector');
   commentLimitSelector.onchange = fetchComments;
 
@@ -112,6 +89,5 @@ window.onload = function () {
   commentForm = document.getElementById('comment-form');
   commentForm.onsubmit = submitComment;
 
-  setPhoto();
   fetchComments();
 }
