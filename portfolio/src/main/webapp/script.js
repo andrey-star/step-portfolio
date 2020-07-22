@@ -24,7 +24,7 @@ function fetchComments() {
       commentContainer.innerHTML = '';
       for (let comment of comments) {
         const para = document.createElement('p');
-        para.classList.add('border-top');
+        para.classList.add('border-bottom');
         para.appendChild(document.createTextNode(comment.text));
         commentContainer.appendChild(para);
       }
