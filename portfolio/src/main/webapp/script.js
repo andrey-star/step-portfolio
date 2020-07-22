@@ -44,7 +44,10 @@ function fetchComments() {
       const commentContainer = document.getElementById('comments-container');
       commentContainer.innerHTML = '';
       for (let comment of comments) {
-        commentContainer.innerHTML += `<p class="comment">${comment.text}</p>\n`
+        const para = document.createElement('p');
+        para.classList.add('comment');
+        para.appendChild(document.createTextNode(comment.text));
+        commentContainer.appendChild(para);
       }
     });
 }
