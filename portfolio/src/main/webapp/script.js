@@ -26,6 +26,10 @@ function fetchComments() {
         const para = document.createElement('p');
         para.classList.add('border-bottom');
         para.appendChild(document.createTextNode(comment.text));
+        para.id = comment.key;
+        para.onclick = function () {
+          deleteComment(para.id);
+        };
         commentContainer.appendChild(para);
       }
     });
@@ -41,7 +45,7 @@ function submitComment() {
       }
       fetchComments();
     });
-  
+
   // No redirect
   return false;
 }
@@ -65,6 +69,12 @@ function submitFormUrlEncoded(url, form) {
     body: formBody
   };
   return fetch(url, fetchOptions);
+}
+
+function deleteComment(id) {
+  const url = `/delete-data?comment-key=${id}`;
+  fetch(url, { method: 'POST' })
+    .then(() => fetchComments());
 }
 
 function deleteAllComments() {
