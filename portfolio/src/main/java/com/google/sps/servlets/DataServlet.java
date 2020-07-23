@@ -1,32 +1,78 @@
-// Copyright 2019 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     https://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 package com.google.sps.servlets;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Logger;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Servlet that returns some example content. TODO: modify this file to handle comments data */
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.KeyFactory;
+
+import static com.google.sps.servlets.RequestUtils.getParameter;
+import static com.google.sps.servlets.RequestUtils.getRequestInfo;
+import static com.google.sps.servlets.RequestUtils.parseLongOrDefault;
+import static com.google.sps.servlets.RequestUtils.toJson;
+
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
+  private static final Logger logger = Logger.getLogger(DataServlet.class.getName());
+  private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
-    response.getWriter().println("<h1>Hello world!</h1>");
+    logger.info(getRequestInfo(request));
+    String commentLimitParameter = getParameter(request, "comment-limit", "");
+    long commentLimit = parseLongOrDefault(commentLimitParameter, 10);
+    String commentOrder = getParameter(request, "comment-order", "asc");
+
+    Query.SortDirection order = commentOrder.equals("dec") ? Query.SortDirection.DESCENDING : Query.SortDirection.ASCENDING;
+    Query commentsQuery = new Query("Comment").addSort("timestamp", order);
+    PreparedQuery results = datastore.prepare(commentsQuery);
+    List<Comment> comments = new ArrayList<>();
+    Iterator<Entity> commentIterable = results.asIterable().iterator();
+    while (commentIterable.hasNext() && commentLimit > 0) {
+      Entity commentEntity = commentIterable.next();
+      comments.add(getCommentFromEntity(commentEntity));
+      commentLimit--;
+    }
+
+    response.setContentType("application/json;");
+    String responseBody = toJson(comments);
+    logger.info("Sending response: " + responseBody);
+    response.getWriter().println(responseBody);
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) {
+    logger.info(getRequestInfo(request));
+    String comment = getParameter(request, "user-comment", "");
+    if (!comment.isEmpty()) {
+      saveComment(comment);
+    }
+  }
+
+  private Comment getCommentFromEntity(Entity commentEntity) {
+    String key = KeyFactory.keyToString(commentEntity.getKey());
+    String text = (String) commentEntity.getProperty("text");
+    long timestamp = (long) commentEntity.getProperty("timestamp");
+    return new Comment(key, text, timestamp);
+  }
+
+  private void saveComment(String comment) {
+    logger.info("Saving comment: " + comment);
+    Entity commentEntity = new Entity("Comment");
+    commentEntity.setProperty("text", comment);
+    commentEntity.setProperty("timestamp", System.currentTimeMillis());
+    datastore.put(commentEntity);
   }
 }

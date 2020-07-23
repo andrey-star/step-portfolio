@@ -15,29 +15,112 @@ function addRandomQuote() {
   quoteContainer.innerText = quote;
 }
 
-// Image gallery
-const imageSources = [
-  'senya-gorgeous.jpg',
-  'senya-superman.jpg',
-  'senya-dissapointed.jpg'
-];
-let catImage;
-let imageSelector;
+function fetchComments() {
+  const url = `/data?comment-limit=${commentLimitSelector.value}&comment-order=${commentOrderSelector.value}`;
+  fetch(url)
+    .then(response => response.json())
+    .then(comments => {
+      const commentContainer = document.getElementById('comments-container');
+      commentContainer.innerHTML = '';
+      for (let comment of comments) {
+        const row = createElement('div', commentContainer, 'row', 'align-items-center');
 
-function setPhoto() {
-  for (let selector of imageSelector) {
-    if (selector.checked) {
-      catImage.src = 'images/' + imageSources[selector.value];
-      break;
+        const colPara = createElement('div', row, 'col-10', 'mt-3');
+        const para = createElement('p', colPara, 'border-bottom', 'h-100');
+        para.key = comment.key;
+        para.appendChild(document.createTextNode(comment.text));
+
+        const colDeleteBtn = createElement('div', row, 'col-2');
+        const btnDelete = createElement('button', colDeleteBtn, 'btn', 'btn-light');
+        btnDelete.onclick = function() {
+          deleteComment(para.key);
+        };
+
+        const trashIcon = createElement('img', btnDelete);
+        trashIcon.src = 'images/trash.svg';
+      }
+    });
+}
+
+function createElement(name, parent, ...classes) {
+  const element = document.createElement(name);
+  for (let clazz of classes) {
+    element.classList.add(clazz);
+  }
+  parent.appendChild(element);
+  return element;
+}
+
+function submitComment() {
+  submitFormUrlEncoded('/data', commentForm)
+    .then(() => {
+      for (let i = 0; i < commentForm.length; i++) {
+        if (commentForm[i].name === 'user-comment') {
+          commentForm[i].value = '';
+        }
+      }
+      fetchComments();
+    });
+
+  // No redirect
+  return false;
+}
+
+function submitFormUrlEncoded(url, form) {
+  const params = {};
+  for (let i = 0; i < form.length; i++) {
+    const name = form[i].name;
+    const value = form[i].value;
+    if (name) {
+      params[name] = value;
     }
+  }
+  return postRequestUrlEncoded(url, params);
+}
+
+function postRequestUrlEncoded(url, params = {}) {
+  let requestBody = [];
+  for (const [key, value] of Object.entries(params)) {
+    requestBody.push(`${key}=${value}`);
+  }
+  requestBody = requestBody.join('&');
+  let fetchOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: requestBody
+  };
+  return fetch(url, fetchOptions);
+}
+
+function deleteComment(id) {
+  const url = '/delete-data';
+  postRequestUrlEncoded(url, { 'comment-key': id })
+    .then(() => fetchComments());
+}
+
+function deleteAllComments() {
+  if (confirm('Are you sure you want to delete all comments?')) {
+    const url = '/delete-data';
+    postRequestUrlEncoded(url)
+      .then(() => fetchComments());
   }
 }
 
+let commentForm;
+let commentLimitSelector;
+let commentOrderSelector;
+
 window.onload = function() {
-  catImage = document.getElementById('cat-photo');
-  imageSelector = document.getElementsByName('cat-photo-id');
-  for (let selector of imageSelector) {
-    selector.onchange = setPhoto;
-  }
-  setPhoto();
+  commentLimitSelector = document.getElementById('comment-limit-selector');
+  commentLimitSelector.onchange = fetchComments;
+
+  commentOrderSelector = document.getElementById('comment-order-selector');
+  commentOrderSelector.onchange = fetchComments;
+
+  commentForm = document.getElementById('comment-form');
+  commentForm.onsubmit = submitComment;
+
+  fetchComments();
 }
