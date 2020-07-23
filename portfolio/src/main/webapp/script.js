@@ -32,7 +32,7 @@ function fetchComments() {
 
         const colDeleteBtn = createElement('div', row, 'col-2');
         const btnDelete = createElement('button', colDeleteBtn, 'btn', 'btn-light');
-        btnDelete.onclick = function () {
+        btnDelete.onclick = function() {
           deleteComment(para.key);
         };
 
@@ -77,7 +77,7 @@ function submitFormUrlEncoded(url, form) {
   }
   return postRequestUrlEncoded(url, params);
 }
- 
+
 function postRequestUrlEncoded(url, params = {}) {
   let requestBody = [];
   for (const [key, value] of Object.entries(params)) {
@@ -96,7 +96,7 @@ function postRequestUrlEncoded(url, params = {}) {
 
 function deleteComment(id) {
   const url = '/delete-data';
-  postRequestUrlEncoded(url, {'comment-key': id})
+  postRequestUrlEncoded(url, { 'comment-key': id })
     .then(() => fetchComments());
 }
 
@@ -112,7 +112,7 @@ let commentForm;
 let commentLimitSelector;
 let commentOrderSelector;
 
-window.onload = function () {
+window.onload = function() {
   commentLimitSelector = document.getElementById('comment-limit-selector');
   commentLimitSelector.onchange = fetchComments;
 
