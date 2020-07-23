@@ -2,12 +2,12 @@ package com.google.sps.servlets;
 
 public class Comment {
 
-  private final long id;
+  private final String key;
   private final String text;
   private final long timestamp;
 
-  public Comment(long id, String text, long timestamp) {
-    this.id = id;
+  public Comment(String key, String text, long timestamp) {
+    this.key = key;
     this.text = text;
     this.timestamp = timestamp;
   }
