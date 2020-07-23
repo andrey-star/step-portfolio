@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,9 +17,6 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.KeyFactory;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import static com.google.sps.servlets.RequestUtils.getParameter;
 import static com.google.sps.servlets.RequestUtils.getRequestInfo;
 import static com.google.sps.servlets.RequestUtils.parseLongOrDefault;
@@ -27,7 +25,7 @@ import static com.google.sps.servlets.RequestUtils.toJson;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
-  private static final Logger logger = LogManager.getLogger(DataServlet.class.getName());
+  private static final Logger logger = Logger.getLogger(DataServlet.class.getName());
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
   @Override
@@ -50,7 +48,7 @@ public class DataServlet extends HttpServlet {
 
     response.setContentType("application/json;");
     String responseBody = toJson(comments);
-    logger.info("Sending response:\n" + responseBody);
+    logger.info("Sending response: " + responseBody);
     response.getWriter().println(responseBody);
   }
 

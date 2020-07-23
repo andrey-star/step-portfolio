@@ -13,8 +13,7 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Key;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Logger;
 
 import static com.google.sps.servlets.RequestUtils.getParameter;
 import static com.google.sps.servlets.RequestUtils.getRequestInfo;
@@ -22,7 +21,7 @@ import static com.google.sps.servlets.RequestUtils.getRequestInfo;
 @WebServlet("/delete-data")
 public class DeleteServlet extends HttpServlet {
 
-  private static final Logger logger = LogManager.getLogger(DeleteServlet.class.getName());
+  private static final Logger logger = Logger.getLogger(DeleteServlet.class.getName());
   private final Query COMMENTS_QUERY = new Query("Comment");
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
