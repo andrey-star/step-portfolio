@@ -50,7 +50,7 @@ public class DataServlet extends HttpServlet {
     logger.info("Received POST request");
     String comment = getParameter(request, "user-comment", "");
     if (!comment.isEmpty()) {
-      handleComment(comment);
+      saveComment(comment);
     }
   }
 
@@ -61,10 +61,10 @@ public class DataServlet extends HttpServlet {
     return new Comment(key, text, timestamp);
   }
 
-  private void handleComment(String comment) {
+  private void saveComment(String comment) {
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("text", comment);
     commentEntity.setProperty("timestamp", System.currentTimeMillis());
-    DatastoreServiceFactory.getDatastoreService().put(commentEntity);
+    datastore.put(commentEntity);
   }
 }

@@ -27,13 +27,13 @@ function fetchComments() {
 
         const colPara = createElement('div', row, 'col-10', 'mt-3');
         const para = createElement('p', colPara, 'border-bottom', 'h-100');
-        para.id = comment.key;
+        para.key = comment.key;
         para.appendChild(document.createTextNode(comment.text));
 
         const colDeleteBtn = createElement('div', row, 'col-2');
         const btnDelete = createElement('button', colDeleteBtn, 'btn', 'btn-light');
         btnDelete.onclick = function () {
-          deleteComment(para.id);
+          deleteComment(para.key);
         };
 
         const trashIcon = createElement('img', btnDelete);
@@ -67,36 +67,43 @@ function submitComment() {
 }
 
 function submitFormUrlEncoded(url, form) {
-  let formBody = [];
+  const params = {};
   for (let i = 0; i < form.length; i++) {
     const name = form[i].name;
     const value = form[i].value;
     if (name) {
-      formBody.push(`${name}=${value}`);
+      params[name] = value;
     }
   }
-  formBody = formBody.join('&');
-
+  return postRequestUrlEncoded(url, params);
+}
+ 
+function postRequestUrlEncoded(url, params = {}) {
+  let requestBody = [];
+  for (const [key, value] of Object.entries(params)) {
+    requestBody.push(`${key}=${value}`);
+  }
+  requestBody = requestBody.join('&');
   let fetchOptions = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     },
-    body: formBody
+    body: requestBody
   };
   return fetch(url, fetchOptions);
 }
 
 function deleteComment(id) {
-  const url = `/delete-data?comment-key=${id}`;
-  fetch(url, { method: 'POST' })
+  const url = '/delete-data';
+  postRequestUrlEncoded(url, {'comment-key': id})
     .then(() => fetchComments());
 }
 
 function deleteAllComments() {
   if (confirm('Are you sure you want to delete all comments?')) {
     const url = '/delete-data';
-    fetch(url, { method: 'POST' })
+    postRequestUrlEncoded(url)
       .then(() => fetchComments());
   }
 }
