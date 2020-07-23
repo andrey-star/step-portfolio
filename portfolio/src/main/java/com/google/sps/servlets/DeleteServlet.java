@@ -1,22 +1,34 @@
 package com.google.sps.servlets;
 
-import com.google.appengine.api.datastore.*;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static com.google.sps.servlets.RequestUtils.*;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Key;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import static com.google.sps.servlets.RequestUtils.getParameter;
+import static com.google.sps.servlets.RequestUtils.getRequestInfo;
 
 @WebServlet("/delete-data")
 public class DeleteServlet extends HttpServlet {
 
+  private static final Logger logger = LogManager.getLogger(DeleteServlet.class.getName());
   private final Query COMMENTS_QUERY = new Query("Comment");
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) {
+    logger.info(getRequestInfo(request));
     String commentKey = getParameter(request, "comment-key", "");
     if (commentKey.isEmpty()) {
       deleteAllComments();
@@ -26,6 +38,7 @@ public class DeleteServlet extends HttpServlet {
   }
 
   private void deleteAllComments() {
+    logger.info("Deleting all comments");
     PreparedQuery results = datastore.prepare(COMMENTS_QUERY);
     for (Entity comment : results.asIterable()) {
       deleteComment(comment.getKey());
@@ -33,6 +46,7 @@ public class DeleteServlet extends HttpServlet {
   }
 
   private void deleteComment(Key key) {
+    logger.info("Deleting comment: " + KeyFactory.keyToString(key));
     datastore.delete(key);
   }
 }

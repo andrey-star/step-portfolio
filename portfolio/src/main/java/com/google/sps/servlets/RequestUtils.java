@@ -25,4 +25,8 @@ public class RequestUtils {
   public static String toJson(Object o) {
     return new Gson().toJson(o);
   }
+
+  public static String getRequestInfo(HttpServletRequest request) {
+    return String.format("Received %s request from %s:%s", request.getMethod(), request.getServerName(), request.getServerPort());
+  }
 }

@@ -1,9 +1,5 @@
 package com.google.sps.servlets;
 
-import com.google.appengine.api.datastore.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,7 +9,20 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static com.google.sps.servlets.RequestUtils.*;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.KeyFactory;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import static com.google.sps.servlets.RequestUtils.getParameter;
+import static com.google.sps.servlets.RequestUtils.getRequestInfo;
+import static com.google.sps.servlets.RequestUtils.parseLongOrDefault;
+import static com.google.sps.servlets.RequestUtils.toJson;
 
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
@@ -23,7 +32,7 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    logger.info("Received GET request");
+    logger.info(getRequestInfo(request));
     String commentLimitParameter = getParameter(request, "comment-limit", "");
     long commentLimit = parseLongOrDefault(commentLimitParameter, 10);
     String commentOrder = getParameter(request, "comment-order", "asc");
@@ -47,7 +56,7 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) {
-    logger.info("Received POST request");
+    logger.info(getRequestInfo(request));
     String comment = getParameter(request, "user-comment", "");
     if (!comment.isEmpty()) {
       saveComment(comment);
@@ -62,6 +71,7 @@ public class DataServlet extends HttpServlet {
   }
 
   private void saveComment(String comment) {
+    logger.info("Saving comment: " + comment);
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("text", comment);
     commentEntity.setProperty("timestamp", System.currentTimeMillis());
