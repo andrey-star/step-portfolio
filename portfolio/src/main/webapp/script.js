@@ -16,8 +16,12 @@ function addRandomQuote() {
 }
 
 function fetchComments() {
-  const url = `/data?comment-limit=${commentLimitSelector.value}&comment-order=${commentOrderSelector.value}`;
-  fetch(url)
+  const url = '/data';
+  const params = {
+    'comment-limit': commentLimitSelector.value,
+    'comment-order': commentOrderSelector.value
+  }
+  submitRequest(url, 'GET', params)
     .then(response => response.json())
     .then(comments => {
       const commentContainer = document.getElementById('comments-container');
@@ -75,22 +79,27 @@ function submitFormUrlEncoded(url, form) {
       params[name] = value;
     }
   }
-  return postRequestUrlEncoded(url, params);
+  return submitRequest(url, 'POST', params);
 }
 
-function postRequestUrlEncoded(url, params = {}) {
+function submitRequest(url, method, params = {}) {
   let requestBody = [];
   for (const [key, value] of Object.entries(params)) {
     requestBody.push(`${key}=${value}`);
   }
   requestBody = requestBody.join('&');
-  let fetchOptions = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: requestBody
-  };
+  let fetchOptions = {};
+  if (method === 'GET') {
+    url += `?${requestBody}`;
+  } else if (method === 'POST') {
+    fetchOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: requestBody
+    };
+  }
   return fetch(url, fetchOptions);
 }
 
@@ -106,6 +115,12 @@ function deleteAllComments() {
     postRequestUrlEncoded(url)
       .then(() => fetchComments());
   }
+}
+
+function getLoginStatus() {
+  const url = '/login-status';
+  fetch(url)
+    .then(response => response.json());
 }
 
 let commentForm;
