@@ -1,7 +1,6 @@
 package com.google.sps.servlets;
 
 import com.google.gson.Gson;
-
 import javax.servlet.http.HttpServletRequest;
 
 public class RequestUtils {
