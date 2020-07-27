@@ -6,6 +6,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.users.UserServiceFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -64,14 +65,16 @@ public class DataServlet extends HttpServlet {
   private Comment getCommentFromEntity(Entity commentEntity) {
     String key = KeyFactory.keyToString(commentEntity.getKey());
     String text = (String) commentEntity.getProperty("text");
+    String email = (String) commentEntity.getProperty("email");
     long timestamp = (long) commentEntity.getProperty("timestamp");
-    return new Comment(key, text, timestamp);
+    return new Comment(key, text, email, timestamp);
   }
 
   private void saveComment(String comment) {
     logger.info("Saving comment: " + comment);
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("text", comment);
+    commentEntity.setProperty("email", UserServiceFactory.getUserService().getCurrentUser().getEmail());
     commentEntity.setProperty("timestamp", System.currentTimeMillis());
     datastore.put(commentEntity);
   }
