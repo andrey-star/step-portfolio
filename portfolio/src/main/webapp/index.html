@@ -1,153 +1,235 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Andrey's Portfolio</title>
 
-<head>
-  <meta charset="UTF-8">
-  <title>Andrey's Portfolio</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="style.css" />
 
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-  <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="script.js"></script>
+  </head>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="script.js"></script>
-</head>
-
-<body>
-  <div class="container">
-    <h1 class="mt-3">Andrey Starodubtsev</h1>
-    <hr>
-    <div class="card mb-3">
-      <h4 class="card-header">
-        Projects
-      </h4>
-      <div class="card-body">
-        <div class="card-deck">
-          <div class="card">
-            <div class="card-body d-flex flex-column">
-              <h5 class="card-title">bot-api</h5>
-              <p class="card-text">Spring web service for comment moderation.</p>
-              <p class="card-text text-secondary ml-auto mt-auto">Java, Spring</p>
-              <a href="https://github.com/andrey-star/bot-api" target="_blank" class="btn btn-primary">View on
-                GitHub</a>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-body d-flex flex-column">
-              <h5 class="card-title">jb-parser</h5>
-              <p class="card-text">Exception safe parser and evaluator for a custom language.</p>
-              <p class="card-text text-secondary ml-auto mt-auto">Java</p>
-              <a href="https://github.com/andrey-star/jb-parser" target="_blank" class="btn btn-primary">View on
-                GitHub</a>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-body d-flex flex-column">
-              <h5 class="card-title">unityfacedetect</h5>
-              <p class="card-text">A Unity based project which detects face position through image processing, and
-                controls a 3D model based on your movement.</p>
-              <p class="card-text text-secondary ml-auto mt-auto">C#, Unity 3D</p>
-              <a href="https://github.com/andrey-star/unityfacedetect" target="_blank" class="btn btn-primary">View
-                on GitHub</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card mb-3">
-      <h4 class="card-header">
-        Cat
-      </h4>
-      <div class="card-body">
-        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-          <ol class="carousel-indicators">
-            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-          </ol>
-          <div class="carousel-inner" style="height: 500px !important;">
-            <div class="carousel-item active">
-              <img class="d-block mx-auto" src="images/senya-gorgeous.jpg" alt="First slide">
-            </div>
-            <div class="carousel-item">
-              <img class="d-block mx-auto" src="images/senya-superman.jpg" alt="Second slide">
-            </div>
-            <div class="carousel-item">
-              <img class="d-block mx-auto" src="images/senya-dissapointed.jpg" alt="Third slide">
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card mb-3">
-      <h4 class="card-header">
-        Contacts
-      </h4>
-      <div class="card-body">
-        <ul>
-          <li><a href="https://github.com/andrey-star" target="_blank">GitHub</a></li>
-          <li><a href="https://linkedin.com/in/andreystar" target="_blank">LinkedIn</a></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="card mb-3">
-      <h4 class="card-header">
-        Education
-      </h4>
-      <div class="card-body">
-        <ul>
-          <li>Physical Technical High School, St. Petersburg</li>
-          <li>ITMO University, St. Petersburg</li>
-        </ul>
-      </div>
-    </div>
-    <div class="mb-3">
-      <button onclick="addRandomQuote()" class="btn btn-secondary mr-3">Random quote</button>
-      <span id="quote-container"></span>
-    </div>
-    <div class="card mb-3">
-      <h4 class="card-header">
-        Comments
-      </h4>
-      <div class="card-body">
-        <form action="" method="POST" id="comment-form">
-          <div class="container mb-4">
-            <div class="row">
-              <div class="col-8">
-                <textarea class="form-control" name="user-comment" placeholder="Enter comment..." rows="1"></textarea>
+  <body>
+    <div class="container">
+      <h1 class="mt-3">Andrey Starodubtsev</h1>
+      <hr />
+      <div class="card mb-3">
+        <h4 class="card-header">
+          Projects
+        </h4>
+        <div class="card-body">
+          <div class="card-deck">
+            <div class="card">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title">bot-api</h5>
+                <p class="card-text">
+                  Spring web service for comment moderation.
+                </p>
+                <p class="card-text text-secondary ml-auto mt-auto">
+                  Java, Spring
+                </p>
+                <a
+                  href="https://github.com/andrey-star/bot-api"
+                  target="_blank"
+                  class="btn btn-primary"
+                  >View on GitHub</a
+                >
               </div>
-              <div class="col-4">
-                <input type="submit" value="Comment" class="btn btn-secondary mx-auto">
+            </div>
+            <div class="card">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title">jb-parser</h5>
+                <p class="card-text">
+                  Exception safe parser and evaluator for a custom language.
+                </p>
+                <p class="card-text text-secondary ml-auto mt-auto">Java</p>
+                <a
+                  href="https://github.com/andrey-star/jb-parser"
+                  target="_blank"
+                  class="btn btn-primary"
+                  >View on GitHub</a
+                >
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title">unityfacedetect</h5>
+                <p class="card-text">
+                  A Unity based project which detects face position through
+                  image processing, and controls a 3D model based on your
+                  movement.
+                </p>
+                <p class="card-text text-secondary ml-auto mt-auto">
+                  C#, Unity 3D
+                </p>
+                <a
+                  href="https://github.com/andrey-star/unityfacedetect"
+                  target="_blank"
+                  class="btn btn-primary"
+                  >View on GitHub</a
+                >
               </div>
             </div>
           </div>
-        </form>
-        <div id="comments-container" class="container"></div>
-        <div class="container mt-4">
-          <label for="comment-limit-selector">Number of comments:</label>
-          <select id="comment-limit-selector" class="custom-select mr-3" style="width:auto;">
-            <option value="1">1</option>
-            <option value="5">5</option>
-            <option value="10" selected="selected">10</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-          </select>
-          <label for="comment-order-selector">Order:</label>
-          <select id="comment-order-selector" class="custom-select mr-3" style="width:auto;">
-            <option value="asc">Oldest first</option>
-            <option value="dec">Newest first</option>
-          </select>
-          <button onclick="deleteAllComments()" class="btn btn-danger">Delete comments</button>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <h4 class="card-header">
+          Cat
+        </h4>
+        <div class="card-body">
+          <div
+            id="carouselExampleIndicators"
+            class="carousel slide"
+            data-ride="carousel"
+          >
+            <ol class="carousel-indicators">
+              <li
+                data-target="#carouselExampleIndicators"
+                data-slide-to="0"
+                class="active"
+              ></li>
+              <li
+                data-target="#carouselExampleIndicators"
+                data-slide-to="1"
+              ></li>
+              <li
+                data-target="#carouselExampleIndicators"
+                data-slide-to="2"
+              ></li>
+            </ol>
+            <div class="carousel-inner" style="height: 500px !important;">
+              <div class="carousel-item active">
+                <img
+                  class="d-block mx-auto"
+                  src="images/senya-gorgeous.jpg"
+                  alt="First slide"
+                />
+              </div>
+              <div class="carousel-item">
+                <img
+                  class="d-block mx-auto"
+                  src="images/senya-superman.jpg"
+                  alt="Second slide"
+                />
+              </div>
+              <div class="carousel-item">
+                <img
+                  class="d-block mx-auto"
+                  src="images/senya-dissapointed.jpg"
+                  alt="Third slide"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <h4 class="card-header">
+          Contacts
+        </h4>
+        <div class="card-body">
+          <ul>
+            <li>
+              <a href="https://github.com/andrey-star" target="_blank"
+                >GitHub</a
+              >
+            </li>
+            <li>
+              <a href="https://linkedin.com/in/andreystar" target="_blank"
+                >LinkedIn</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <h4 class="card-header">
+          Education
+        </h4>
+        <div class="card-body">
+          <ul>
+            <li>Physical Technical High School, St. Petersburg</li>
+            <li>ITMO University, St. Petersburg</li>
+          </ul>
+        </div>
+      </div>
+      <div class="mb-3">
+        <button onclick="addRandomQuote()" class="btn btn-secondary mr-3">
+          Random quote
+        </button>
+        <span id="quote-container"></span>
+      </div>
+      <div class="card mb-3">
+        <h4 class="card-header">
+          Comments
+        </h4>
+        <div class="card-body">
+          <form action="" method="POST" id="comment-form">
+            <div class="container mb-4">
+              <div class="row">
+                <div class="col-8">
+                  <textarea
+                    class="form-control"
+                    name="user-comment"
+                    placeholder="Enter comment..."
+                    rows="1"
+                  ></textarea>
+                </div>
+                <div class="col-4">
+                  <input
+                    type="submit"
+                    value="Comment"
+                    class="btn btn-secondary mx-auto"
+                  />
+                </div>
+              </div>
+            </div>
+          </form>
+          <div id="comments-container" class="container"></div>
+          <div class="container mt-4">
+            <label for="comment-limit-selector">Number of comments:</label>
+            <select
+              id="comment-limit-selector"
+              class="custom-select mr-3"
+              style="width: auto;"
+            >
+              <option value="1">1</option>
+              <option value="5">5</option>
+              <option value="10" selected="selected">10</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+            <label for="comment-order-selector">Order:</label>
+            <select
+              id="comment-order-selector"
+              class="custom-select mr-3"
+              style="width: auto;"
+            >
+              <option value="asc">Oldest first</option>
+              <option value="dec">Newest first</option>
+            </select>
+            <button onclick="deleteAllComments()" class="btn btn-danger">
+              Delete comments
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-    crossorigin="anonymous"></script>
-</body>
-
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>
