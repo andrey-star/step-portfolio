@@ -1,9 +1,9 @@
 function addRandomQuote() {
   const quotes = [
     `Now. Say my name. Heisenberg. You're god damn right`,
-    "I am the danger.",
+    'I am the danger.',
     `And on that terrible dissapointment I'm afraid it's time to end.`,
-    "There’s a woman lying dead. Perfectly sound analysis but I was hoping you’d go deeper.",
+    'There’s a woman lying dead. Perfectly sound analysis but I was hoping you’d go deeper.',
     `You're treading on some mighty thin ice here.`,
   ];
 
@@ -11,47 +11,47 @@ function addRandomQuote() {
   const quote = quotes[Math.floor(Math.random() * quotes.length)];
 
   // Add it to the page.
-  const quoteContainer = document.getElementById("quote-container");
+  const quoteContainer = document.getElementById('quote-container');
   quoteContainer.innerText = quote;
 }
 
 function fetchComments() {
-  const url = "/data";
+  const url = '/data';
   const params = {
-    "comment-limit": commentLimitSelector.value,
-    "comment-order": commentOrderSelector.value,
+    'comment-limit': commentLimitSelector.value,
+    'comment-order': commentOrderSelector.value,
   };
-  submitRequest(url, "GET", params)
+  submitRequest(url, 'GET', params)
     .then((response) => response.json())
     .then((comments) => {
-      const commentContainer = document.getElementById("comments-container");
-      commentContainer.innerHTML = "";
+      const commentContainer = document.getElementById('comments-container');
+      commentContainer.innerHTML = '';
       for (let comment of comments) {
         const row = createElement(
-          "div",
+          'div',
           commentContainer,
-          "row",
-          "align-items-center",
+          'row',
+          'align-items-center',
         );
 
-        const colPara = createElement("div", row, "col-10", "mt-3");
-        const para = createElement("p", colPara, "border-bottom", "h-100");
+        const colPara = createElement('div', row, 'col-10', 'mt-3');
+        const para = createElement('p', colPara, 'border-bottom', 'h-100');
         para.key = comment.key;
         para.appendChild(document.createTextNode(comment.text));
 
-        const colDeleteBtn = createElement("div", row, "col-2");
+        const colDeleteBtn = createElement('div', row, 'col-2');
         const btnDelete = createElement(
-          "button",
+          'button',
           colDeleteBtn,
-          "btn",
-          "btn-light",
+          'btn',
+          'btn-light',
         );
         btnDelete.onclick = function () {
           deleteComment(para.key);
         };
 
-        const trashIcon = createElement("img", btnDelete);
-        trashIcon.src = "images/trash.svg";
+        const trashIcon = createElement('img', btnDelete);
+        trashIcon.src = 'images/trash.svg';
       }
     });
 }
@@ -68,10 +68,10 @@ function createElement(name, parent, ...classes) {
 function submitComment() {
   getLoginStatus().then((status) => {
     if (status.isLoggedIn) {
-      submitFormUrlEncoded("/data", commentForm).then(() => {
+      submitFormUrlEncoded('/data', commentForm).then(() => {
         for (let i = 0; i < commentForm.length; i++) {
-          if (commentForm[i].name === "user-comment") {
-            commentForm[i].value = "";
+          if (commentForm[i].name === 'user-comment') {
+            commentForm[i].value = '';
           }
         }
         fetchComments();
@@ -96,7 +96,7 @@ function submitFormUrlEncoded(url, form) {
       params[name] = value;
     }
   }
-  return submitRequest(url, "POST", params);
+  return submitRequest(url, 'POST', params);
 }
 
 function submitRequest(url, method, params = {}) {
@@ -104,15 +104,15 @@ function submitRequest(url, method, params = {}) {
   for (const [key, value] of Object.entries(params)) {
     requestBody.push(`${key}=${value}`);
   }
-  requestBody = requestBody.join("&");
+  requestBody = requestBody.join('&');
   let fetchOptions = {};
-  if (method === "GET") {
+  if (method === 'GET') {
     url += `?${requestBody}`;
-  } else if (method === "POST") {
+  } else if (method === 'POST') {
     fetchOptions = {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: requestBody,
     };
@@ -121,14 +121,14 @@ function submitRequest(url, method, params = {}) {
 }
 
 function deleteComment(id) {
-  const url = "/delete-data";
-  submitRequest(url, "POST", { "comment-key": id }).then(() => fetchComments());
+  const url = '/delete-data';
+  submitRequest(url, 'POST', { 'comment-key': id }).then(() => fetchComments());
 }
 
 function deleteAllComments() {
-  if (confirm("Are you sure you want to delete all comments?")) {
-    const url = "/delete-data";
-    submitRequest(url, "POST").then(() => fetchComments());
+  if (confirm('Are you sure you want to delete all comments?')) {
+    const url = '/delete-data';
+    submitRequest(url, 'POST').then(() => fetchComments());
   }
 }
 
@@ -136,12 +136,12 @@ function updateAuthInfo() {
   getLoginStatus().then((status) => {
     console.log(status.isLoggedIn);
     authLink.href = status.authUrl;
-    authButton.innerText = status.isLoggedIn ? "Logout" : "Login";
+    authButton.innerText = status.isLoggedIn ? 'Logout' : 'Login';
   });
 }
 
 function getLoginStatus() {
-  const url = "/login-status";
+  const url = '/login-status';
   return fetch(url).then((response) => response.json());
 }
 
@@ -152,18 +152,18 @@ let authLink;
 let authButton;
 
 window.onload = function () {
-  commentLimitSelector = document.getElementById("comment-limit-selector");
+  commentLimitSelector = document.getElementById('comment-limit-selector');
   commentLimitSelector.onchange = fetchComments;
 
-  commentOrderSelector = document.getElementById("comment-order-selector");
+  commentOrderSelector = document.getElementById('comment-order-selector');
   commentOrderSelector.onchange = fetchComments;
 
-  commentForm = document.getElementById("comment-form");
+  commentForm = document.getElementById('comment-form');
   commentForm.onsubmit = submitComment;
 
   fetchComments();
 
-  authLink = document.getElementById("auth-link");
-  authButton = document.getElementById("auth-button");
+  authLink = document.getElementById('auth-link');
+  authButton = document.getElementById('auth-button');
   updateAuthInfo();
 };
