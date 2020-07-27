@@ -31,7 +31,7 @@ function fetchComments() {
           "div",
           commentContainer,
           "row",
-          "align-items-center"
+          "align-items-center",
         );
 
         const colPara = createElement("div", row, "col-10", "mt-3");
@@ -44,7 +44,7 @@ function fetchComments() {
           "button",
           colDeleteBtn,
           "btn",
-          "btn-light"
+          "btn-light",
         );
         btnDelete.onclick = function () {
           deleteComment(para.key);
@@ -66,13 +66,21 @@ function createElement(name, parent, ...classes) {
 }
 
 function submitComment() {
-  submitFormUrlEncoded("/data", commentForm).then(() => {
-    for (let i = 0; i < commentForm.length; i++) {
-      if (commentForm[i].name === "user-comment") {
-        commentForm[i].value = "";
-      }
+  getLoginStatus().then((status) => {
+    if (status.isLoggedIn) {
+      submitFormUrlEncoded("/data", commentForm).then(() => {
+        for (let i = 0; i < commentForm.length; i++) {
+          if (commentForm[i].name === "user-comment") {
+            commentForm[i].value = "";
+          }
+        }
+        fetchComments();
+      });
+    } else {
+      // Redirect to auth page
+      console.log(status.href);
+      window.location.href = status.authUrl;
     }
-    fetchComments();
   });
 
   // No redirect
@@ -114,24 +122,34 @@ function submitRequest(url, method, params = {}) {
 
 function deleteComment(id) {
   const url = "/delete-data";
-  postRequestUrlEncoded(url, { "comment-key": id }).then(() => fetchComments());
+  submitRequest(url, "POST", { "comment-key": id }).then(() => fetchComments());
 }
 
 function deleteAllComments() {
   if (confirm("Are you sure you want to delete all comments?")) {
     const url = "/delete-data";
-    postRequestUrlEncoded(url).then(() => fetchComments());
+    submitRequest(url, "POST").then(() => fetchComments());
   }
+}
+
+function updateAuthInfo() {
+  getLoginStatus().then((status) => {
+    console.log(status.isLoggedIn);
+    authLink.href = status.authUrl;
+    authButton.innerText = status.isLoggedIn ? "Logout" : "Login";
+  });
 }
 
 function getLoginStatus() {
   const url = "/login-status";
-  fetch(url).then((response) => response.json());
+  return fetch(url).then((response) => response.json());
 }
 
 let commentForm;
 let commentLimitSelector;
 let commentOrderSelector;
+let authLink;
+let authButton;
 
 window.onload = function () {
   commentLimitSelector = document.getElementById("comment-limit-selector");
@@ -144,4 +162,8 @@ window.onload = function () {
   commentForm.onsubmit = submitComment;
 
   fetchComments();
+
+  authLink = document.getElementById("auth-link");
+  authButton = document.getElementById("auth-button");
+  updateAuthInfo();
 };
