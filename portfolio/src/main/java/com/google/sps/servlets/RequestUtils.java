@@ -1,5 +1,9 @@
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
 import com.google.gson.Gson;
 import javax.servlet.http.HttpServletRequest;
 
@@ -27,5 +31,16 @@ public class RequestUtils {
 
   public static String getRequestInfo(HttpServletRequest request) {
     return String.format("Received %s request from %s:%s", request.getMethod(), request.getServerName(), request.getServerPort());
+  }
+
+  public static String getCurrentUsername(String id, DatastoreService datastore) {
+    Query query = new Query("UserInfo")
+            .setFilter(new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id));
+    PreparedQuery results = datastore.prepare(query);
+    Entity entity = results.asSingleEntity();
+    if (entity == null) {
+      return "";
+    }
+    return (String) entity.getProperty("username");
   }
 }

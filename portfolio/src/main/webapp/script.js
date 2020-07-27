@@ -39,9 +39,13 @@ function fetchComments() {
         text.key = comment.key;
         text.appendChild(document.createTextNode(comment.text));
 
-        const emailCol = createElement('div', commentRow, 'col-3');
-        const email = createElement('p', emailCol, 'text-right', 'mt-2');
-        email.appendChild(document.createTextNode(comment.email));
+        const authorCol = createElement('div', commentRow, 'col-3');
+        const author = createElement('p', authorCol, 'text-right', 'mt-2');
+        let authorName = comment.email;
+        if (comment.username && comment.username !== '') {
+          authorName = comment.username;
+        }
+        author.appendChild(document.createTextNode(authorName));
 
         const deleteBtnCol = createElement('div', commentRow, 'col-1');
         const deleteBtn = createElement(
@@ -82,7 +86,6 @@ function submitComment() {
       });
     } else {
       // Redirect to auth page
-      console.log(status.href);
       window.location.href = status.authUrl;
     }
   });
@@ -138,7 +141,6 @@ function deleteAllComments() {
 
 function updateAuthInfo() {
   getLoginStatus().then((status) => {
-    console.log(status.isLoggedIn);
     authLink.href = status.authUrl;
     authButton.innerText = status.isLoggedIn ? 'Logout' : 'Login';
   });
@@ -155,7 +157,7 @@ let commentOrderSelector;
 let authLink;
 let authButton;
 
-window.onload = function () {
+function setup() {
   commentLimitSelector = document.getElementById('comment-limit-selector');
   commentLimitSelector.onchange = fetchComments;
 
@@ -170,4 +172,6 @@ window.onload = function () {
   authLink = document.getElementById('auth-link');
   authButton = document.getElementById('auth-button');
   updateAuthInfo();
-};
+}
+
+document.addEventListener('DOMContentLoaded', setup);
