@@ -27,30 +27,34 @@ function fetchComments() {
       const commentContainer = document.getElementById('comments-container');
       commentContainer.innerHTML = '';
       for (let comment of comments) {
-        const row = createElement(
+        const commentRow = createElement(
           'div',
           commentContainer,
           'row',
           'align-items-center',
         );
 
-        const colPara = createElement('div', row, 'col-10', 'mt-3');
-        const para = createElement('p', colPara, 'border-bottom', 'h-100');
-        para.key = comment.key;
-        para.appendChild(document.createTextNode(comment.text));
+        const textCol = createElement('div', commentRow, 'col-8', 'mt-3');
+        const text = createElement('p', textCol, 'border-bottom', 'h-100');
+        text.key = comment.key;
+        text.appendChild(document.createTextNode(comment.text));
 
-        const colDeleteBtn = createElement('div', row, 'col-2');
-        const btnDelete = createElement(
+        const emailCol = createElement('div', commentRow, 'col-3');
+        const email = createElement('p', emailCol, 'text-right', 'mt-2');
+        email.appendChild(document.createTextNode(comment.email));
+
+        const deleteBtnCol = createElement('div', commentRow, 'col-1');
+        const deleteBtn = createElement(
           'button',
-          colDeleteBtn,
+          deleteBtnCol,
           'btn',
           'btn-light',
         );
-        btnDelete.onclick = function () {
-          deleteComment(para.key);
+        deleteBtn.onclick = function () {
+          deleteComment(text.key);
         };
 
-        const trashIcon = createElement('img', btnDelete);
+        const trashIcon = createElement('img', deleteBtn);
         trashIcon.src = 'images/trash.svg';
       }
     });
