@@ -2,19 +2,19 @@ package com.google.sps.servlets;
 
 public class LoginStatus {
 
-  private final boolean status;
-  private final String url;
+  private final boolean isLoggedIn;
+  private final String authUrl;
 
   public LoginStatus(boolean status, String url) {
-    this.status = status;
-    this.url = url;
+    this.isLoggedIn = status;
+    this.authUrl = url;
   }
 
-  public boolean isStatus() {
-    return status;
+  public boolean isLoggedIn() {
+    return isLoggedIn;
   }
 
-  public String getUrl() {
-    return url;
+  public String getAuthUrl() {
+    return authUrl;
   }
 }
