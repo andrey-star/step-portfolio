@@ -1,42 +1,49 @@
-function addRandomQuote() {
-  const quotes = [
-    `Now. Say my name. Heisenberg. You're god damn right`,
-    'I am the danger.',
-    `And on that terrible dissapointment I'm afraid it's time to end.`,
-    'There’s a woman lying dead. Perfectly sound analysis but I was hoping you’d go deeper.',
-    `You're treading on some mighty thin ice here.`,
-  ];
-
-  // Pick a random quote.
-  const quote = quotes[Math.floor(Math.random() * quotes.length)];
-
-  // Add it to the page.
-  const quoteContainer = document.getElementById('quote-container');
-  quoteContainer.innerText = quote;
-}
-
 function fetchComments() {
-  const url = `/data?comment-limit=${commentLimitSelector.value}&comment-order=${commentOrderSelector.value}`;
-  fetch(url)
-    .then(response => response.json())
-    .then(comments => {
+  const url = '/data';
+  const params = {
+    'comment-limit': commentLimitSelector.value,
+    'comment-order': commentOrderSelector.value,
+  };
+  submitRequest(url, 'GET', params)
+    .then((response) => response.json())
+    .then((comments) => {
       const commentContainer = document.getElementById('comments-container');
       commentContainer.innerHTML = '';
       for (let comment of comments) {
-        const row = createElement('div', commentContainer, 'row', 'align-items-center');
+        const commentRow = createElement(
+          'div',
+          commentContainer,
+          'row',
+          'align-items-center',
+        );
 
-        const colPara = createElement('div', row, 'col-10', 'mt-3');
-        const para = createElement('p', colPara, 'border-bottom', 'h-100');
-        para.key = comment.key;
-        para.appendChild(document.createTextNode(comment.text));
+        const textCol = createElement('div', commentRow, 'col-8', 'mt-3');
+        const text = createElement('p', textCol, 'border-bottom', 'h-100');
+        text.key = comment.key;
+        text.appendChild(document.createTextNode(comment.text));
 
-        const colDeleteBtn = createElement('div', row, 'col-2');
-        const btnDelete = createElement('button', colDeleteBtn, 'btn', 'btn-light');
-        btnDelete.onclick = function() {
-          deleteComment(para.key);
+        const authorCol = createElement('div', commentRow, 'col-3');
+        const author = createElement('p', authorCol, 'text-right', 'mt-2');
+        let authorName = '-';
+        if (comment.username && comment.username !== '') {
+          authorName = comment.username;
+        } else if (comment.email && comment.email !== '') {
+          authorName = comment.email;
+        }
+        author.appendChild(document.createTextNode(authorName));
+
+        const deleteBtnCol = createElement('div', commentRow, 'col-1');
+        const deleteBtn = createElement(
+          'button',
+          deleteBtnCol,
+          'btn',
+          'btn-light',
+        );
+        deleteBtn.onclick = function () {
+          deleteComment(text.key);
         };
 
-        const trashIcon = createElement('img', btnDelete);
+        const trashIcon = createElement('img', deleteBtn);
         trashIcon.src = 'images/trash.svg';
       }
     });
@@ -52,15 +59,21 @@ function createElement(name, parent, ...classes) {
 }
 
 function submitComment() {
-  submitFormUrlEncoded('/data', commentForm)
-    .then(() => {
-      for (let i = 0; i < commentForm.length; i++) {
-        if (commentForm[i].name === 'user-comment') {
-          commentForm[i].value = '';
+  getLoginStatus().then((status) => {
+    if (status.isLoggedIn) {
+      submitFormUrlEncoded('/data', commentForm).then(() => {
+        for (let i = 0; i < commentForm.length; i++) {
+          if (commentForm[i].name === 'user-comment') {
+            commentForm[i].value = '';
+          }
         }
-      }
-      fetchComments();
-    });
+        fetchComments();
+      });
+    } else {
+      // Redirect to auth page
+      window.location.href = status.authUrl;
+    }
+  });
 
   // No redirect
   return false;
@@ -75,44 +88,91 @@ function submitFormUrlEncoded(url, form) {
       params[name] = value;
     }
   }
-  return postRequestUrlEncoded(url, params);
+  return submitRequest(url, 'POST', params);
 }
 
-function postRequestUrlEncoded(url, params = {}) {
+function submitRequest(url, method, params = {}) {
   let requestBody = [];
   for (const [key, value] of Object.entries(params)) {
     requestBody.push(`${key}=${value}`);
   }
   requestBody = requestBody.join('&');
-  let fetchOptions = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: requestBody
-  };
+  let fetchOptions = {};
+  if (method === 'GET') {
+    url += `?${requestBody}`;
+  } else if (method === 'POST') {
+    fetchOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: requestBody,
+    };
+  }
   return fetch(url, fetchOptions);
 }
 
 function deleteComment(id) {
   const url = '/delete-data';
-  postRequestUrlEncoded(url, { 'comment-key': id })
-    .then(() => fetchComments());
+  submitRequest(url, 'POST', { 'comment-key': id }).then(() => fetchComments());
 }
 
 function deleteAllComments() {
   if (confirm('Are you sure you want to delete all comments?')) {
     const url = '/delete-data';
-    postRequestUrlEncoded(url)
-      .then(() => fetchComments());
+    submitRequest(url, 'POST').then(() => fetchComments());
   }
+}
+
+function updateAuthInfo() {
+  getLoginStatus().then((status) => {
+    authLink.href = status.authUrl;
+    authButton.innerText = status.isLoggedIn ? 'Logout' : 'Login';
+  });
+}
+
+function getLoginStatus() {
+  const url = '/login-status';
+  return fetch(url).then((response) => response.json());
+}
+
+google.charts.load('current', { packages: ['line'] });
+google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+  fetch('/memes-data')
+    .then((response) => response.json())
+    .then((memes) => {
+      const data = new google.visualization.DataTable();
+      data.addColumn('string', memes[0][0]);
+      data.addColumn('number', memes[0][1]);
+      data.addColumn('number', memes[0][2]);
+      data.addColumn('number', memes[0][3]);
+      data.addColumn('number', memes[0][4]);
+      data.addColumn('number', memes[0][5]);
+      for (let i = 1; i < memes.length; i++) {
+        data.addRow(memes[i]);
+      }
+      const options = {
+        chart: {
+          title: 'Meme Popularity',
+        },
+      };
+
+      const chart = new google.charts.Line(
+        document.getElementById('chart-container'),
+      );
+      chart.draw(data, google.charts.Line.convertOptions(options));
+    });
 }
 
 let commentForm;
 let commentLimitSelector;
 let commentOrderSelector;
+let authLink;
+let authButton;
 
-window.onload = function() {
+function setup() {
   commentLimitSelector = document.getElementById('comment-limit-selector');
   commentLimitSelector.onchange = fetchComments;
 
@@ -123,4 +183,10 @@ window.onload = function() {
   commentForm.onsubmit = submitComment;
 
   fetchComments();
+
+  authLink = document.getElementById('auth-link');
+  authButton = document.getElementById('auth-button');
+  updateAuthInfo();
 }
+
+document.addEventListener('DOMContentLoaded', setup);
