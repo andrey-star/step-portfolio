@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="style.css" />
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="script.js"></script>
   </head>
 
@@ -164,11 +165,13 @@
           </ul>
         </div>
       </div>
-      <div class="mb-3">
-        <button onclick="addRandomQuote()" class="btn btn-secondary mr-3">
-          Random quote
-        </button>
-        <span id="quote-container"></span>
+      <div class="card mb-3">
+        <h4 class="card-header">
+          Memes
+        </h4>
+        <div class="card-body">
+          <div id="chart-container"></div>
+        </div>
       </div>
       <div class="card mb-3">
         <h4 class="card-header">

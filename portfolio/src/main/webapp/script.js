@@ -1,20 +1,3 @@
-function addRandomQuote() {
-  const quotes = [
-    `Now. Say my name. Heisenberg. You're god damn right`,
-    'I am the danger.',
-    `And on that terrible dissapointment I'm afraid it's time to end.`,
-    'There’s a woman lying dead. Perfectly sound analysis but I was hoping you’d go deeper.',
-    `You're treading on some mighty thin ice here.`,
-  ];
-
-  // Pick a random quote.
-  const quote = quotes[Math.floor(Math.random() * quotes.length)];
-
-  // Add it to the page.
-  const quoteContainer = document.getElementById('quote-container');
-  quoteContainer.innerText = quote;
-}
-
 function fetchComments() {
   const url = '/data';
   const params = {
@@ -149,6 +132,36 @@ function updateAuthInfo() {
 function getLoginStatus() {
   const url = '/login-status';
   return fetch(url).then((response) => response.json());
+}
+
+google.charts.load('current', { packages: ['line'] });
+google.charts.setOnLoadCallback(drawChart);
+
+function drawChart() {
+  fetch('/memes-data')
+    .then((response) => response.json())
+    .then((memes) => {
+      const data = new google.visualization.DataTable();
+      data.addColumn('string', memes[0][0]);
+      data.addColumn('number', memes[0][1]);
+      data.addColumn('number', memes[0][2]);
+      data.addColumn('number', memes[0][3]);
+      data.addColumn('number', memes[0][4]);
+      data.addColumn('number', memes[0][5]);
+      for (let i = 1; i < memes.length; i++) {
+        data.addRow(memes[i]);
+      }
+      const options = {
+        chart: {
+          title: 'Meme Popularity',
+        },
+      };
+
+      const chart = new google.charts.Line(
+        document.getElementById('chart-container'),
+      );
+      chart.draw(data, google.charts.Line.convertOptions(options));
+    });
 }
 
 let commentForm;
