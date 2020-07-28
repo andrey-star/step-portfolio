@@ -24,9 +24,11 @@ function fetchComments() {
 
         const authorCol = createElement('div', commentRow, 'col-3');
         const author = createElement('p', authorCol, 'text-right', 'mt-2');
-        let authorName = comment.email;
+        let authorName = '-';
         if (comment.username && comment.username !== '') {
           authorName = comment.username;
+        } else if (comment.email && comment.email !== '') {
+          authorName = comment.email;
         }
         author.appendChild(document.createTextNode(authorName));
 
