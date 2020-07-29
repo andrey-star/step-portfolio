@@ -23,14 +23,22 @@ function fetchComments() {
         text.appendChild(document.createTextNode(comment.text));
 
         const authorCol = createElement('div', commentRow, 'col-3');
-        const author = createElement('p', authorCol, 'text-right', 'mt-2');
+        const info = createElement('p', authorCol, 'text-right', 'mt-3');
         let authorName = '-';
-        if (comment.username && comment.username !== '') {
-          authorName = comment.username;
-        } else if (comment.email && comment.email !== '') {
+        if (comment.email && comment.email !== '') {
           authorName = comment.email;
         }
-        author.appendChild(document.createTextNode(authorName));
+        if (comment.username && comment.username !== '') {
+          authorName = comment.username;
+        }
+        info.appendChild(document.createTextNode(authorName));
+        info.appendChild(document.createElement('br'));
+        const time = createElement('small', info);
+        time.appendChild(
+          document.createTextNode(
+            getDateFromTimestamp(comment.timestamp) + ' UTC',
+          ),
+        );
 
         const deleteBtnCol = createElement('div', commentRow, 'col-1');
         const deleteBtn = createElement(
@@ -134,6 +142,26 @@ function updateAuthInfo() {
 function getLoginStatus() {
   const url = '/login-status';
   return fetch(url).then((response) => response.json());
+}
+
+function getDateFromTimestamp(timestamp) {
+  const date = new Date(timestamp);
+
+  const day = formatTwoDigits(date.getDay());
+  const month = formatTwoDigits(date.getMonth());
+  const year = date.getFullYear();
+  const dateStr = `${day}.${month}.${year}`;
+
+  const hours = formatTwoDigits(date.getHours());
+  const minutes = formatTwoDigits(date.getMinutes());
+  const seconds = formatTwoDigits(date.getSeconds());
+  const timeStr = `${hours}:${minutes}:${seconds}`;
+
+  return timeStr + ' ' + dateStr;
+}
+
+function formatTwoDigits(toFormat) {
+  return ('0' + toFormat).substr(-2);
 }
 
 google.charts.load('current', { packages: ['line'] });
