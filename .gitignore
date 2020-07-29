@@ -1,5 +1,5 @@
-portfolio/target
-.idea
+target/
+.idea/
 *.iml
 .DS_Store
 .prettierrc.json
