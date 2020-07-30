@@ -1,5 +1,8 @@
 package com.google.sps.servlets;
 
+import static com.google.sps.servlets.RequestUtils.getParameter;
+import static com.google.sps.servlets.RequestUtils.getRequestInfo;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -13,14 +16,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static com.google.sps.servlets.RequestUtils.getParameter;
-import static com.google.sps.servlets.RequestUtils.getRequestInfo;
-
 @WebServlet("/delete-data")
 public class DeleteServlet extends HttpServlet {
 
   private static final Logger logger = Logger.getLogger(DeleteServlet.class.getName());
-  private final Query COMMENTS_QUERY = new Query("Comment");
+  private static final Query COMMENTS_QUERY = new Query("Comment");
   private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
   @Override
