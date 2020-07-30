@@ -146,10 +146,6 @@ function getDateFromTimestamp(timestamp) {
   return new Date(timestamp).toLocaleString('en-GB');
 }
 
-function formatTwoDigits(toFormat) {
-  return ('0' + toFormat).substr(-2);
-}
-
 google.charts.load('current', { packages: ['line'] });
 google.charts.setOnLoadCallback(drawChart);
 
