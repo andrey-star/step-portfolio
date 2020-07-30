@@ -2,6 +2,7 @@ package com.google.sps;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,7 +16,7 @@ public final class FindMeetingQuery {
     // Generate a list of meeting actions (start or end) of the required attendees sorted by time.
     // The order of 'start' and 'end' events with equal time permits 0 minute long meetings.
     List<MeetingAction> sortedAttendeeEvents = events.stream()
-            .filter(event -> event.getAttendees().stream().anyMatch(request.getAttendees()::contains))
+            .filter(event -> !Collections.disjoint(event.getAttendees(), request.getAttendees()))
             .map(Event::getWhen)
             .flatMap(event -> Stream.of(
                     new MeetingAction(event.start(), MeetingActionType.START),
