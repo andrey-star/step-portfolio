@@ -35,9 +35,7 @@ function fetchComments() {
         info.appendChild(document.createElement('br'));
         const time = createElement('small', info);
         time.appendChild(
-          document.createTextNode(
-            getDateFromTimestamp(comment.timestamp) + ' UTC',
-          ),
+          document.createTextNode(getDateFromTimestamp(comment.timestamp)),
         );
 
         const deleteBtnCol = createElement('div', commentRow, 'col-1');
@@ -145,19 +143,7 @@ function getLoginStatus() {
 }
 
 function getDateFromTimestamp(timestamp) {
-  const date = new Date(timestamp);
-
-  const day = formatTwoDigits(date.getDay());
-  const month = formatTwoDigits(date.getMonth());
-  const year = date.getFullYear();
-  const dateStr = `${day}.${month}.${year}`;
-
-  const hours = formatTwoDigits(date.getHours());
-  const minutes = formatTwoDigits(date.getMinutes());
-  const seconds = formatTwoDigits(date.getSeconds());
-  const timeStr = `${hours}:${minutes}:${seconds}`;
-
-  return timeStr + ' ' + dateStr;
+  return new Date(timestamp).toLocaleString('en-GB');
 }
 
 function formatTwoDigits(toFormat) {
