@@ -1,5 +1,8 @@
 package com.google.sps.servlets;
 
+import static com.google.sps.servlets.RequestUtils.getRequestInfo;
+import static com.google.sps.servlets.RequestUtils.toJson;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +13,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static com.google.sps.servlets.RequestUtils.getRequestInfo;
-import static com.google.sps.servlets.RequestUtils.toJson;
-
 @WebServlet("/memes-data")
 public class MemesServlet extends HttpServlet {
 
@@ -21,7 +21,8 @@ public class MemesServlet extends HttpServlet {
 
   @Override
   public void init() {
-    Scanner scanner = new Scanner(getServletContext().getResourceAsStream("/WEB-INF/memes-popularity-by-week.csv"));
+    Scanner scanner = new Scanner(getServletContext()
+            .getResourceAsStream("/WEB-INF/memes-popularity-by-week.csv"));
     memesData.add(scanner.nextLine().split(","));
     while (scanner.hasNextLine()) {
       String line = scanner.nextLine();

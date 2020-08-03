@@ -1,5 +1,11 @@
 package com.google.sps.servlets;
 
+import static com.google.sps.servlets.RequestUtils.getCurrentUsername;
+import static com.google.sps.servlets.RequestUtils.getParameter;
+import static com.google.sps.servlets.RequestUtils.getRequestInfo;
+import static com.google.sps.servlets.RequestUtils.parseLongOrDefault;
+import static com.google.sps.servlets.RequestUtils.toJson;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -18,12 +24,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static com.google.sps.servlets.RequestUtils.getParameter;
-import static com.google.sps.servlets.RequestUtils.getRequestInfo;
-import static com.google.sps.servlets.RequestUtils.getCurrentUsername;
-import static com.google.sps.servlets.RequestUtils.parseLongOrDefault;
-import static com.google.sps.servlets.RequestUtils.toJson;
-
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
 
@@ -37,7 +37,9 @@ public class DataServlet extends HttpServlet {
     long commentLimit = parseLongOrDefault(commentLimitParameter, 10);
     String commentOrder = getParameter(request, "comment-order", "asc");
 
-    Query.SortDirection order = commentOrder.equals("dec") ? Query.SortDirection.DESCENDING : Query.SortDirection.ASCENDING;
+    Query.SortDirection order = commentOrder.equals("dec")
+            ? Query.SortDirection.DESCENDING
+            : Query.SortDirection.ASCENDING;
     Query commentsQuery = new Query("Comment").addSort("timestamp", order);
     PreparedQuery results = datastore.prepare(commentsQuery);
     List<Comment> comments = new ArrayList<>();

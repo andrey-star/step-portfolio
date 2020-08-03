@@ -1,5 +1,9 @@
 package com.google.sps.servlets;
 
+import static com.google.sps.servlets.RequestUtils.getCurrentUsername;
+import static com.google.sps.servlets.RequestUtils.getRequestInfo;
+import static com.google.sps.servlets.RequestUtils.toJson;
+
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.users.UserService;
@@ -10,10 +14,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import static com.google.sps.servlets.RequestUtils.getRequestInfo;
-import static com.google.sps.servlets.RequestUtils.getCurrentUsername;
-import static com.google.sps.servlets.RequestUtils.toJson;
 
 @WebServlet("/login-status")
 public class LoginStatusServlet extends HttpServlet {

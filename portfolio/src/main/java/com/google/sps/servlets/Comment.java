@@ -8,6 +8,16 @@ public class Comment {
   private final String username;
   private final long timestamp;
 
+  /**
+   * Constructs a new {@code Comment} object with the provided key, text, author's email and
+   * username, and a creation timestamp.
+   *
+   * @param key a unique database identifier
+   * @param text the content of the comment
+   * @param email author's email address
+   * @param username author's username
+   * @param timestamp the creation timestamp
+   */
   public Comment(String key, String text, String email, String username, long timestamp) {
     this.key = key;
     this.text = text;
